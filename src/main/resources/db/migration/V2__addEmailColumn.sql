@@ -1,0 +1,2 @@
+ALTER TABLE contact
+ADD email VARCHAR(254) UNIQUE;

@@ -1,5 +1,8 @@
 package ru.academits.java.kononov.phonebookhibernate.controller;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import ru.academits.java.kononov.phonebookhibernate.exception.ValidationExceptio
 import ru.academits.java.kononov.phonebookhibernate.service.ContactsService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -37,9 +41,20 @@ public class ContactsController {
     }
 
     @PostMapping
-    public BaseResponse addContact(@RequestBody ContactDto contact) {
+    public BaseResponse addContact(@Valid @RequestBody ContactDto contact) {
         try {
             contactsService.addContact(contactDtoToContactConverter.convert(contact));
+
+            return BaseResponse.createSuccessResponse();
+        } catch (ValidationException e) {
+            return handleValidationException(e);
+        }
+    }
+
+    @DeleteMapping
+    public BaseResponse deleteContact(@RequestParam Long id) {
+        try {
+            contactsService.deleteContact(id);
 
             return BaseResponse.createSuccessResponse();
         } catch (ValidationException e) {
@@ -53,14 +68,11 @@ public class ContactsController {
         return BaseResponse.createErrorResponse(e.getMessage());
     }
 
-    @DeleteMapping
-    public BaseResponse deleteContact(@RequestParam Long id) {
-        try {
-            contactsService.deleteContact(id);
+    @ExceptionHandler(ConstraintViolationException.class)
+    public BaseResponse handleConstraintViolationException(ConstraintViolationException e) {
 
-            return BaseResponse.createSuccessResponse();
-        } catch (ValidationException e) {
-            return handleValidationException(e);
-        }
+        return BaseResponse.createErrorResponse(e.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining("; ")));
     }
 }

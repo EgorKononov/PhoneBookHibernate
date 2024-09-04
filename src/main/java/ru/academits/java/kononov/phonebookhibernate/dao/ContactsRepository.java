@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ContactsRepository extends JpaRepository<Contact, Long> {
-    @Query("""
-            select c from Contact c
-            where upper(c.firstName) like concat('%', :firstName, '%')
-            or upper(c.lastName) like concat('%', :lastName, '%')
-            or upper(c.phoneNumber) like concat('%', :phoneNumber, '%')""")
-    List<Contact> findByTerm(String firstName, String lastName, String phoneNumber);
+    List<Contact> findByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrPhoneNumberContainsIgnoreCaseOrEmailContainsIgnoreCase(
+            String firstName,
+            String lastName,
+            String phoneNumber,
+            String email);
 
     Optional<Contact> findByPhoneNumberIgnoreCase(String phoneNumber);
+
+    Optional<Contact> findByEmailIgnoreCase(String email);
 
     @Modifying
     @Transactional

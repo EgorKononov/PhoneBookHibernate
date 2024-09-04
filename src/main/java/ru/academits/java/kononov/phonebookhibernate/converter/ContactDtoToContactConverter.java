@@ -12,7 +12,8 @@ public class ContactDtoToContactConverter implements Converter<ContactDto, Conta
                 source.getId(),
                 source.getFirstName(),
                 source.getLastName(),
-                source.getPhoneNumber()
+                source.getPhoneNumber(),
+                source.getEmail()
         );
     }
 }
