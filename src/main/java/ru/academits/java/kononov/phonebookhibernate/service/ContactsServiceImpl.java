@@ -23,15 +23,15 @@ public class ContactsServiceImpl implements ContactsService {
     public List<Contact> getContacts(String term) {
         if (term == null || term.isBlank()) {
             return contactsRepository.findAll();
-        } else {
-            String termTrim = EscapeCharacter.DEFAULT.escape(term.trim());
-
-            return contactsRepository.findByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrPhoneNumberContainsIgnoreCaseOrEmailContainsIgnoreCase(
-                    termTrim,
-                    termTrim,
-                    termTrim,
-                    termTrim);
         }
+
+        String termTrim = EscapeCharacter.DEFAULT.escape(term.trim());
+
+        return contactsRepository.findByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrPhoneNumberContainsIgnoreCaseOrEmailContainsIgnoreCase(
+                termTrim,
+                termTrim,
+                termTrim,
+                termTrim);
     }
 
     @Override
