@@ -26,6 +26,7 @@ public class ContactsServiceImpl implements ContactsService {
         }
 
         String termTrim = EscapeCharacter.DEFAULT.escape(term.trim());
+        log.debug("Searching contacts for term [{}]", termTrim);
 
         return contactsRepository.findByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrPhoneNumberContainsIgnoreCaseOrEmailContainsIgnoreCase(
                 termTrim,
